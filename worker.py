@@ -10,10 +10,9 @@ from login import DoubanLogin
 
 
 def worker():
-    path_base = '/Users/Kr0c/Desktop/SourceCode/DoubanRobot/'
     # load 'session.txt', or call login() to generate it
     try:
-        with open(path_base + 'session.txt', 'rb') as f:
+        with open('session.txt', 'rb') as f:
             headers = cPickle.load(f)
             cookies = cPickle.load(f)
     except:
@@ -21,6 +20,7 @@ def worker():
         session = DoubanLogin().login()
         headers = session.headers
         cookies = session.cookies
+
     # connect to manager
     BaseManager.register('get_task_queue')
     BaseManager.register('get_result_queue')
@@ -30,6 +30,7 @@ def worker():
     worker.connect()
     task = worker.get_task_queue()
     result = worker.get_result_queue()
+
     # start listening
     print '[-] Waiting...'
     while True:
@@ -40,7 +41,8 @@ def worker():
             print '[+] Information returned.\n'
             result.put(info)
             print '[-] Waiting...'
-            time.sleep(2)
+            time.sleep(5)
+
         except Exception, e:
             print e
             exit()

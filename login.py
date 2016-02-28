@@ -23,8 +23,8 @@ class DoubanLogin(object):
         self.url_login = 'http://www.douban.com/accounts/login'
         # Form Data to POST
         self.payload = {
-            'form_email': 'kr0c@outlook.com',
-            'form_password': 'test1234test',
+            'form_email': 'example@email.com',
+            'form_password': 'password',
             'remember': 'on'
         }
 
@@ -32,17 +32,20 @@ class DoubanLogin(object):
         # create a session, and it'll be saved to keep connection status(headers & cookies)
         session = requests.session()
         session.headers.update(self.headers)
+
         # if needs captcha
         try:
             # get url_captcha, captcha-solution should be POST together with captcha_id
             login_page = BeautifulSoup(session.get(self.url_login).content, 'lxml')
             url_captcha = login_page.find('img', id='captcha_image')['src']
             captcha_id = url_captcha[38:65]
+
             # show captcha image
             img_buf = requests.get(url_captcha, stream=True, headers=self.headers).content
             Image.open(cStringIO.StringIO(img_buf)).show()
             print '[+] 验证码显示成功！'
             captcha_solution = raw_input('[+] 请输入验证码：\n>>> ')
+            
             # add captcha-solution & captcha-id to Form Data
             self.payload['captcha-solution'] = captcha_solution
             self.payload['captcha-id'] = captcha_id
@@ -53,14 +56,18 @@ class DoubanLogin(object):
         # login and return session
         login = session.post(self.url_login, data=self.payload)
         login_code = BeautifulSoup(login.content, 'lxml').find('html')['lang']
+
         if login_code == 'zh-cmn-Hans':
             print '[+] 登录成功！'
+
             # 将session写入文件: session.txt
             with open('session.txt', 'wb') as f:
                 cPickle.dump(session.headers, f)
                 cPickle.dump(session.cookies.get_dict(), f)
                 print '[+] 将session写入文件: session.txt'
+
             return session
+
         elif login_code == 'zh-CN':
             print '[-] 登录失败：验证码错误！'
             exit()
