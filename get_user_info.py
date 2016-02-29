@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 def get_info(user_id, headers, cookies, proxies=None):
     url = 'http://www.douban.com/people/' + user_id
     soup = BeautifulSoup(requests.get(url, headers=headers, cookies=cookies, proxies=proxies).content, 'lxml')
-    # nickname, city, register, book, music, movie, review, group, follow, follower
+    # nickname, city, register, book, music, movie, review, group, active, follow, follower
     try:
         nickname = soup.head.title.string.encode('utf-8')[1:-1]
     except:
@@ -25,6 +25,14 @@ def get_info(user_id, headers, cookies, proxies=None):
     except:
         register = '0000-00-00'
         nickname = 'Quit|Ban'
+    try:
+        follow = soup.body.find(id='friend').a.string.encode('utf-8')[6:]
+    except:
+        follow = 0
+    try:
+        follower = soup.body.find(class_='rev-link').a.string.encode('utf-8')[len(nickname)+6: -9]
+    except:
+        follower = 0
     try:
         # book = soup.body.find(id='book').find_all('a')[2].string.encode('utf-8')[:-9]    # bug
         book = soup.body.find(id='book').h2.find_all(href=re.compile('collect'))[0].string.encode('utf-8')[:-9]
@@ -47,19 +55,15 @@ def get_info(user_id, headers, cookies, proxies=None):
     except:
         group = 0
     try:
-        follow = soup.body.find(id='friend').a.string.encode('utf-8')[6:]
+        active = soup.body.find(class_='actions').span['title'][:10]
     except:
-        follow = 0
-    try:
-        follower = soup.body.find(class_='rev-link').a.string.encode('utf-8')[len(nickname)+6: -9]
-    except:
-        follower = 0
+        active = '0000-00-00'
 
-    user_info = (user_id, nickname, city, register, book, music, movie, review, group, follow, follower)
+    user_info = (user_id, nickname, city, register, follow, follower, book, music, movie, review, group, active)
     print '=============  ID: %s  ==============' % user_id
-    print '[+] Nickname: %s\n[+] City: %s\n[+] Register: %s\n[+] Book: %s\n[+] Music: %s\n' \
-          '[+] Movie: %s\n[+] Review: %s\n[+] Group: %s\n[+] Follow: %s\n[+] Follower: %s' \
-          % (nickname, city, register, book, music, movie, review, group, follow, follower)
+    print '[+] Nickname: %s\n[+] City: %s\n[+] Register: %s\n[+] Follow: %s\n[+] Follower: %s\n' \
+          '[+] Book: %s\n[+] Music: %s\n[+] Movie: %s\n[+] Review: %s\n[+] Group: %s\n[+] Active: %s' \
+          % (nickname, city, register, follow, follower, book, music, movie, review, group, active)
     print '==============  User Info  ================'
     return user_info
 
