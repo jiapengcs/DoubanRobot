@@ -18,23 +18,29 @@ Simple distributed crawler for Douban User Information.
 
 1.登录时`login.py`需要豆瓣账号：`form_email`, `form_password`
 
-    self.payload = {
-        'form_email': 'example@email.com',
-        'form_password': 'password',
-        'remember': 'on'
-    }
+```python
+self.payload = {
+    'form_email': 'example@email.com',
+    'form_password': 'password',
+    'remember': 'on'
+}
+```
     
 2.`manager.py`中需设置初始任务ID，与`worker`通信的端口，爬虫延迟时间。
 
-    INIT_ID = '130949863'
-    PORT = 5000
-    DELAY_TIME = 5
+```python
+INIT_ID = '130949863'
+PORT = 5000
+DELAY_TIME = 5
+```
     
 3.`worker.py`中需设置运行`manager`的主机地址，通信端口，爬虫延迟时间。
 
-    SERVER_ADDR = '127.0.0.1'
-    PORT = 5000
-    DELAY_TIME = 5
+```python
+SERVER_ADDR = '127.0.0.1'
+PORT = 5000
+DELAY_TIME = 5
+```
     
 ### 运行：
 
