@@ -11,7 +11,8 @@ import get_user_id
 import get_user_info
 from login import DoubanLogin
 
-init_id = '130949863'
+INIT_ID = '130949863'
+DELAY_TIME = 5
 
 
 def manager():
@@ -45,7 +46,7 @@ def manager():
     todo = task2file.load('todo.txt')
 
     # initial task(if no task file)
-    new = set([init_id])
+    new = set([INIT_ID])
     todo = (todo | (new - (new & done)))
     count = 1
 
@@ -57,7 +58,7 @@ def manager():
                 task.put(id_)
                 print '\n[+] ========  No.%d  ID: %s  ========' % (count, id_)
                 print '[~] Send to task queue...'
-                time.sleep(5)
+                time.sleep(DELAY_TIME)
                 new = get_user_id.get_id(id_, headers=headers, cookies=cookies)
 
                 # set() operation, add new IDs to todo

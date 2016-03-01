@@ -8,6 +8,8 @@ import get_user_info
 from multiprocessing.managers import BaseManager
 from login import DoubanLogin
 
+DELAY_TIME = 5
+
 
 def worker():
     # load 'session.txt', or call login() to generate it
@@ -41,7 +43,7 @@ def worker():
             print '[+] Information returned.\n'
             result.put(info)
             print '[-] Waiting...'
-            time.sleep(5)
+            time.sleep(DELAY_TIME)
 
         except Exception, e:
             print e
