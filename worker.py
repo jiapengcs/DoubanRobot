@@ -9,6 +9,8 @@ from multiprocessing.managers import BaseManager
 from login import DoubanLogin
 
 DELAY_TIME = 5
+SERVER_ADDR = '127.0.0.1'
+PORT = 5000
 
 
 def worker():
@@ -26,9 +28,8 @@ def worker():
     # connect to manager
     BaseManager.register('get_task_queue')
     BaseManager.register('get_result_queue')
-    server_addr = '127.0.0.1'
     print 'Connect to server %s:5000...' % server_addr
-    worker = BaseManager(address=(server_addr, 5000), authkey='douban')
+    worker = BaseManager(address=(SERVER_ADDR, PORT), authkey='douban')
     worker.connect()
     task = worker.get_task_queue()
     result = worker.get_result_queue()

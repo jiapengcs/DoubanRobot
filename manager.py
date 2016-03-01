@@ -13,6 +13,7 @@ from login import DoubanLogin
 
 INIT_ID = '130949863'
 DELAY_TIME = 5
+PORT = 5000
 
 
 def manager():
@@ -36,7 +37,7 @@ def manager():
     BaseManager.register('get_result_queue', callable=lambda: result_queue)
 
     # bound port 5000, set authkey
-    manager = BaseManager(address=('', 5000), authkey='douban')
+    manager = BaseManager(address=('', PORT), authkey='douban')
     manager.start()
     task = manager.get_task_queue()
     result = manager.get_result_queue()
